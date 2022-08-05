@@ -1,0 +1,10 @@
+
+User-agent: *
+Disallow: /listing/ #Disallow LP pages
+Disallow: /*/Comments/
+
+
+Sitemap: https://college.studywoo.com/sitemap-daily.xml
+Sitemap: https://college.studywoo.com/sitemap-weekly.xml
+Sitemap: https://college.studywoo.com/sitemap-monthly.xml
+Sitemap: https://college.studywoo.com/sitemap-yearly.xml

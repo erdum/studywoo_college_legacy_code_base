@@ -1,0 +1,1139 @@
+@extends('frontend::layouts.master',['title'=>$college->name])
+
+@push('style')
+
+    <!-- SPECIFIC CSS -->
+    <link href="{{ asset('frontend/css/review.css') }}" rel="stylesheet">
+    <!-- SPECIFIC CSS -->
+
+    <link href="{{ asset('frontend/css/detail-page.css') }}" rel="stylesheet">
+    {{-- <link href="{{ asset('frontend/css/review.css') }}" rel="stylesheet"> --}}
+
+    <!-- SPECIFIC CSS -->
+    <link href="{{ asset('frontend/css/blog.css') }}" rel="stylesheet">
+
+    <style>
+        .show {
+            display: block !important;
+        }
+
+        .overlay__inner {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            /* bring your own prefixes */
+            transform: translate(-50%, -50%);
+
+            display: none;
+            background-color: #ffffff7d;
+            z-index: 99999;
+
+            width: 100vw;
+            height: 100vh;
+
+        }
+
+        .overlay__content {
+            left: 50%;
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .spinner {
+            z-index: 99999;
+            width: 75px;
+            height: 75px;
+            display: inline-block;
+            border-width: 2px;
+            border-color: rgba(255, 255, 255, 0.05);
+            border-top-color: rgb(14, 13, 13);
+            animation: spin 1s infinite linear;
+            border-radius: 100%;
+            border-style: solid;
+        }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+    </style>
+
+    <style>
+        .content-pane {
+            padding: 20px;
+            text-align: justify
+        }
+
+        .content-pane>p {
+            padding: 5px;
+            text-align: justify;
+            font-size: 16px
+        }
+
+        .inline span {
+            margin-right: 20px
+        }
+
+        .inline-div {
+            display: flex;
+            flex-direction: row
+        }
+
+        .row {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+            margin-right: -15px;
+            margin-left: -15px;
+        }
+
+        .justify-content-between {
+            -webkit-box-pack: justify !important;
+            -ms-flex-pack: justify !important;
+            justify-content: space-between !important;
+        }
+
+        .user_info {
+            margin-left: 40px
+        }
+
+        .dot_list:not(:first-child):before {
+            content: '';
+            position: absolute;
+            background-color: gray;
+            padding: 2px;
+            left: -3px;
+            top: 50%;
+            border-radius: 50%;
+            -webkit-transform: translateY(-50%);
+            -ms-transform: translateY(-50%);
+            transform: translateY(-50%);
+        }
+
+        .arrow_carrot-right_alt2 {
+            margin-left: 10px
+        }
+
+    </style>
+
+    <style>
+        .collapse:not(.show) {
+            display: none !important;
+        }
+
+        .collapsing {
+            height: 0;
+            overflow: hidden;
+            transition: height 0.35s ease;
+        }
+
+    </style>
+
+    <style>
+        .content {
+            background: #fff;
+            border-radius: 3px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.075), 0 2px 4px rgba(0, 0, 0, 0.0375);
+            padding: 15px;
+        }
+
+        .panel-group {
+            margin-bottom: 0;
+        }
+
+        .panel-group .panel {
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        .panel-group .panel .panel-heading {
+            padding: 0;
+        }
+
+        .panel-group .panel .panel-heading h4 a {
+            background: #f8f8f8;
+            display: block;
+            font-size: 14px;
+            font-weight: bold;
+            padding: 15px;
+            text-decoration: none;
+            transition: 0.15s all ease-in-out;
+        }
+
+        .panel-group .panel .panel-heading h4 a:hover,
+        .panel-group .panel .panel-heading h4 a:not(.collapsed) {
+            background: #fff;
+            transition: 0.15s all ease-in-out;
+        }
+
+        .panel-group .panel .panel-heading h4 a:not(.collapsed) i:before {
+            content: "";
+        }
+
+        .panel-group .panel .panel-heading h4 a i {
+            color: #999;
+        }
+
+        .panel-group .panel .panel-body {
+            padding-top: 0;
+        }
+
+        .panel-group .panel .panel-heading+.panel-collapse>.nav-tabs-group,
+        .panel-group .panel .panel-heading+.panel-collapse>.panel-body {
+            border-top: none;
+        }
+
+        .panel-group .panel+.panel {
+            border-top: none;
+            margin-top: 0;
+        }
+
+        .push-right {
+            float: right;
+            margin-top: 2px;
+            margin-right: -6px;
+        }
+
+    </style>
+
+    <style>
+        .nav-scroller-wrapper {
+            position: relative;
+            overflow: hidden;
+            padding: 15px 30px;
+        }
+
+        .nav-scroller {
+            position: relative;
+            overflow-x: auto;
+            overflow-y: hidden;
+            white-space: nowrap;
+            font-size: 0;
+            margin: auto;
+        }
+
+        .nav-scroller-content {
+            position: relative;
+            display: flex;
+            justify-content: left;
+            float: left;
+            width: min-content;
+            min-width: 100%;
+            transition: transform 0.4s ease-in-out;
+        }
+
+        .no-transition {
+            transition: none;
+        }
+
+        .nav-scroller-item {
+            display: block;
+            font-size: 1.125rem;
+            text-transform: uppercase;
+            text-align: left;
+            padding: 0.5rem;
+
+        }
+
+        .nav-scroller-btn {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            padding-left: 4px;
+            padding-right: 4px;
+            font-size: 1.25rem;
+            transition: opacity 0.3s;
+            border: 0px;
+            background: #e2e2e2;
+        }
+
+        .nav-scroller-btn:not(.active) {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .nav-scroller-btn--left {
+            left: 0;
+        }
+
+        .nav-scroller-btn--right {
+            right: 0;
+        }
+
+        .fullwidth {
+            /* padding: 5px 0; */
+            /* margin: 15px 0; */
+            background-color: #fff;
+        }
+
+        .btn-sm {
+            width: 25px;
+            height: 25px;
+            margin: 25% -10%;
+            margin: auto;
+        }
+
+        /* .button {
+                font: bold 11px Arial;
+                text-decoration: none;
+                background-color: #EEEEEE;
+                color:red;
+                padding: 2px 6px 2px 6px;
+                border-top: 1px solid #CCCCCC;
+                border-right: 1px solid #333333;
+                border-bottom: 1px solid #333333;
+                border-left: 1px solid #CCCCCC;
+    } */
+
+    </style>
+
+
+    <style>
+        .tab-route.active {
+            background-color: #3aa6a7;
+            color:white;
+
+        }
+
+    </style>
+
+    <style>
+        .logo-name {
+            display: flex;
+        }
+
+        .college-logo {
+            height: 60px;
+            width: 60px;
+            border-radius: 50%;
+        }
+
+        .college-name {
+            display: flex;
+            align-items: center;
+            margin-left: 15px;
+        }
+
+    </style>
+
+<style>
+    .img-fluid2 {
+        max-width: 100%;
+        height: auto
+    }
+
+    @media only screen and (max-width:700px){
+        table tbody tr td{
+            font-size:12px!important;
+            word-break: inherit;
+            padding: 0%;
+
+}
+tr>td:last-child {
+    /* word-wrap: break-word; */
+     word-break: noraml; 
+    padding: 0%;
+    /* width: 100%; */
+}
+    }
+</style>
+
+
+@endpush
+
+@push('script')
+
+   <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "CollegeOrUniversity",
+            "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "{{ $college->state->name .' '.  $college->city->name .' '.  $college->location }}",
+                "streetAddress": "{{ $college->location }}"
+            },
+            "name": "{{ $college->name }}",
+            "url": "{{ $college->website }}",
+            "legalName": "{{ $college->name }}",
+            "description": "{{ $college->name }}",
+            "logo": "{{ $college->collegeLogo ? asset($college->collegeLogo->imageUrl) : 'https://ui-avatars.com/api/?name=' . substr($college->name, 0, 2) }}",
+            "telephone": "{{ ($college->contact_number) }}"
+        }
+    </script>
+@endpush
+
+
+
+@section('content')
+
+    <main itemprop="mainEntity" itemscope itemtype="https://schema.org/CollegeOrUniversity">
+        <div class="container-fluid  margin_detail">
+            <div class="page_header">
+                <div class="breadcrumbs">
+                    <ul itemscope itemtype="http://schema.org/BreadcrumbList">
+                        <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                            <a itemprop="item" href="{{ route('homePage') }}">
+                                <span itemprop="name">Home</span>
+                                <meta itemprop="position" content="1">
+                            </a>
+
+
+                        </li>
+                        <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                            <a itemprop="item" href="{{ route('listingPage') }}">
+                                <span itemprop="name">Listing</span>
+                                <meta itemprop="position" content="2">
+                            </a>
+
+
+                        </li>
+                        <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem"
+                            class="active">
+                            <a itemprop="item" class="active"
+                                href="{{ route('collegeDetail', ['college' => $college->slug]) }}">
+                                <span itemprop="name">{{ $college->name }}</span>
+                                <meta itemprop="position" content="3">
+                            </a>
+                        </li>
+
+
+                        @if ($subpage->slug != 'info')
+
+                            <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem"
+                                class="active">
+
+                                <a itemprop="item" class="active"
+                                    href="{{ route('collegeDetail', ['college' => $college->slug, 'page' => $subpage->slug]) }}">
+                                    <span itemprop="name" class="active">{{ $subpage->title }}</span>
+                                    <meta style="display: none" itemprop="position" content="4">
+                                </a>
+                            </li>
+                        @endif
+                    </ul>
+                </div>
+            </div>
+            <div class="row" style="margin-bottom: 0px;">
+                <div class="col-12">
+                    <div class="box_general" style=" background-color:gray; color:white;">
+                        <div class="d-none d-sm-block">
+                            @if ($college->featuredImage(true))
+                                <img src="/img/lazy-placeholder.png"
+                                    data-src="{{ $college->featuredImage(true) ? asset($college->featuredImage(true)) : 'img/detail_placeholder.png' }}"
+                                    class="img-fluid lazy" alt="{{ $college->name }}"
+                                    style="width: 100%; height:200px" />
+                            @endif
+                        </div>
+                        <div class="main_info_wrapper">
+                            <div class="main_info clearfix" style="padding:20px 40px">
+
+                                <div class="user_desc">
+
+                                    <div class="logo-name" style="padding-bottom: 10px;">
+                                        <img class="college-logo"
+                                            src="{{ $college->collegeLogo ? asset($college->collegeLogo->imageUrl) : 'https://ui-avatars.com/api/?name=' . substr($college->name, 0, 2)}}"
+                                            alt="{{ $college->name }}" srcset="">
+
+                                        <h3 class="college-name" itemprop="name" style="color:white;">{{ $college->name }}</h3>
+                                    </div>
+
+                                    <i class="fa fa-map-marker" aria-hidden="true"></i>
+                                    <span itemprop="address">
+                                        {{ $college->state->name }} ,
+                                        {{ $college->city->name }}
+                                    </span>
+
+                                    @if (count($college->affiliated) != 0)
+                                        <i class="fas fa-bookmark" style="padding-left:15px"></i>
+                                        <span>{{ implode(
+                                            ',',
+                                            $college->affiliated()->pluck('name')->toArray(),
+                                        ) }}</span>
+
+                                    @endif
+
+                                    @if ($college->estd)
+                                        <i class="fas fa-landmark" style="padding-left:15px"></i>
+                                        <span>
+                                            ESTD {{ $college->estd }}
+                                        </span>
+                                    @endif
+
+                                    @if (count($college->collegeType) != 0)
+                                        <i class="fas fa-star" style="padding-left:15px"></i>
+
+                                        <span>
+                                            {{ $college->collegeType[0]->name }}
+                                        </span>
+                                    @endif
+                                    <ul class="tags no_margin">
+                                        @forelse ($college->courses as $course)
+                                            <li><span class="link">{{ $course->name }}</span></li>
+                                        @empty
+                                        @endforelse
+                                    </ul>
+                                </div>
+                                <div class="score_in">
+                                    <div class="rating" itemprop="aggregateRating" itemscope
+                                        itemtype="https://schema.org/AggregateRating">
+
+                                        <meta itemprop="itemReviewed" content="{{ $college->name }}">
+                                        <div class="score">
+                                            <span> <b itemprop="reviewCount"> {{ $college->reviewCount }}
+                                                </b><em>Reviews</em>
+                                            </span>
+                                            <strong
+                                                itemprop="ratingValue">{{ Str::limit($college->averageRating, 4, '') }}</strong>
+                                            <meta itemprop="worstRating" content="{{ $college->worstRating }}" />
+                                            <meta itemprop="bestRating" content="{{ $college->bestRating }}" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12" style="overflow: hidden;">
+                    <div class="box_general " style="overflow: hidden;">
+                        <section class="fullwidth">
+                            <div>
+                                <div class="nav-scroller-wrapper">
+                                    <nav class="nav-scroller"
+                                        style="margin:0px 20px; margin-right:50px; overflow-x: hidden;">
+                                        <div class="nav-scroller-content">
+
+                                            <a href="{{ route('collegeDetail', ['college' => $college]) }}"
+                                                class="nav-scroller-item nav-link {{ $subpage->slug == 'info' ? 'active' : '' }} tab-route"
+                                                data-url='info'
+                                                style="margin-right:30px;border: none; padding: 10px; padding-top:3px; border-radius: 6px;">Info</a>
+
+                                            @forelse ($college->subPages ?? [] as $subPage)
+
+
+                                                @if ($subPage->slug != 'info')
+
+                                                    <a href="{{ route('collegeDetail', ['college' => $college->slug, 'page' => $subPage->slug]) }}"
+                                                        class="nav-scroller-item nav-link {{ $subpage->slug == $subPage->slug ? 'active' : '' }} tab-route"
+                                                        data-url={{ $subPage->slug }}
+                                                        style="margin-right:30px;border: none; padding: 10px; padding-top:3px; border-radius: 6px;">{{ ucwords($subPage->title) }}</a>
+
+                                                @endif
+                                            @empty
+                                            @endforelse
+                                        </div>
+                                    </nav>
+                                    <button class="btn btn-sm  nav-scroller-btn nav-scroller-btn--left"><svg
+                                            class="icon " width="20" height="20" viewBox="0 0 21 32">
+                                            <path
+                                                d="M0 16l4.736-4.768 11.264-11.232 4.736 4.736-11.232 11.264 11.232 11.264-4.736 4.736-11.264-11.264z">
+                                            </path>
+                                        </svg>
+                                    </button>
+
+                                    <button class="btn btn-sm  nav-scroller-btn nav-scroller-btn--right"><svg
+                                            class="icon " width="20" height="20" viewBox="0 0 21 32">
+                                            <path
+                                                d="M0 27.264l11.264-11.264-11.264-11.264 4.736-4.736 11.264 11.232 4.736 4.768-16 16z">
+                                            </path>
+                                        </svg>
+                                    </button>
+
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-9">
+                    <div class="box_general">
+                        <div class="tabs_detail">
+
+                            <div class="tab-content" role="tablist">
+                                <div class="overlay__inner">
+                                    <div class="overlay__content"><span class="spinner"></span></div>
+                                </div>
+
+                                <div id="pane" class="card tab-pane fade show active content-pane" role="tabpanel"
+                                    aria-labelledby="tab-A">
+
+                                    @switch($subpage->slug)
+                                        @case('info')
+                                            @include('frontend::pages.detail.subpages.info', compact(["college" ,"subpage"]))
+                                        @break
+                                        @case('review')
+                                            @include('frontend::pages.detail.subpages.review', compact(["college" ,"subpage"]))
+                                        @break
+                                        @case('comment')
+                                            @include('frontend::pages.detail.subpages.comment', compact(["college" ,"subpage"]))
+                                        @break
+                                        @case('faq')
+                                            @include('frontend::pages.detail.subpages.faq', compact(["college" ,"subpage"]))
+                                        @break
+                                        @case('course')
+                                            @include('frontend::pages.detail.subpages.course', compact(["college" ,"subpage"]))
+                                        @break
+                                        @case('image')
+                                            @include('frontend::pages.detail.subpages.image', compact(["college" ,"subpage"]))
+                                        @break
+                                        @case('video')
+                                            @include('frontend::pages.detail.subpages.video', compact(["college" ,"subpage"]))
+                                        @break
+                                        @default
+                                             @include('frontend::pages.detail.subpages.info', compact(["college" ,"subpage"]))
+                                    @endswitch
+
+                                </div>
+                            </div>
+                            <!-- /tab-content -->
+                        </div>
+                        <!-- /tabs_detail -->
+                    </div>
+                    <!-- /tabs_detail -->
+                </div>
+                <!-- /box_general -->
+                <!-- /col -->
+                <div class=" col-lg-3" id="sidebar_fixed">
+                    <ul class="share-buttons">
+                        <li><a class="fb-share"
+                                href="https://www.facebook.com/share.php?u={{ url()->current() }}&title={{ $college->name }}"
+                                target="blank"><i class="social_facebook"></i> Share</a></li>
+                        <li><a class="twitter-share"
+                                href="https://twitter.com/intent/tweet?status={{ $college->name }}+{{ url()->current() }}"
+                                target="blank"><i class="social_twitter"></i> Share</a></li>
+                        <li><a class="telegram-share"
+                                href="https://t.me/share/url?url={{ url()->current() }}&text={{ $college->name }}"
+                                target="blank"><i class="fab fa-telegram"></i> Share</a></li>
+                        <li><a class="whatsapp-share" href="https://wa.me/1234567890/?text={{ url()->current() }}"
+                                data-action="share/whatsapp/share" target="blank"><i class="fab fa-whatsapp"
+                                    style=" font-size:14px"></i> Share</a>
+                        </li>
+                    </ul>
+
+                    <div class="box_general">
+                        {{-- <a href="#apply-now-form" class="btn_1 btn_access"
+
+                            style="margin-bottom:5px; margin-top:5px; height:50px; width:100%;padding:21px">
+                            APPLY NOW
+                        </a> --}}
+                        <a href="#sign-in-dialog" id="sign-in" class="btn_1" style="margin-bottom:5px; margin-top:5px; height:50px; width:100%;padding:21px">APPLY NOW</a>
+                    </div>
+                    <div class="box_general">
+                        <h5 class="text-center" style="padding: 10px">Students Also Visit</h5>
+                    </div>
+
+                    @foreach ($college->getRelatedCollege() as $key=>$collegeDetail)
+                        @if ($collegeDetail->slug != $college->slug)
+
+                            <div class="review_card box_general" style="{{ $key % 2 == 0 ? 'background-color: black' : 'background-color: skyblue' }}">
+                                <div class="row">
+                                    <div class="main_info clearfix">
+                                        <div class="row">
+                                            <div class="user_info" style="text-align: left !important">
+
+                                                <figure>
+                                                    <img class="inline"
+                                                        src="{{ asset($collegeDetail->logo ?? 'img/lazy-placeholder.png') }}"
+                                                        alt="{{ $college->name }}" />
+                                                </figure>
+                                            </div>
+                                            <div class="col">
+                                                <div class="holder">
+                                                    <div class="user_desc">
+                                                        <h6>
+                                                            <a
+                                                                href="{{ route('collegeDetail', ['college' => $collegeDetail->slug]) }}">
+                                                                {{ $collegeDetail->name }}</a>
+                                                        </h6>
+                                                        <p>
+                                                            <i class="fa fa-map-marker" aria-hidden="true"></i>
+                                                            <span itemprop="address">
+                                                                <a
+                                                                    href="{{ route('filterCollege', ['filter1' => $college->state->slug]) }}">{{ $college->state->name }}</a>
+                                                                ,
+                                                                <a
+                                                                    href="{{ route('filterCollege', ['filter1' => $college->city->slug]) }}">
+                                                                    {{ $college->city->name }}</a>
+                                                            </span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        @endif
+
+                        <!-- /row -->
+
+                    @endforeach
+
+
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Add Comment</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form method="post" action="{{ route('saveComment') }}">
+                        <div class="modal-body">
+                            @csrf
+                            <input type="text" value="{{ $college->id }}" name="college_id" hidden>
+                            <textarea name="comment" class="form-control"></textarea>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- /container -->
+
+    </main>
+
+
+
+@endsection
+
+
+@push('script')
+    {{-- <script src="{{ asset('frontend/js/specific_review.js') }}"></script> --}}
+    {{-- <script>
+        var slug = "{{ $college->slug }}";
+
+        function loadDoc(url) {
+            console.log("load")
+            url = url.split("/info")[0]
+            $(".overlay__inner").addClass("show");
+            $.ajax({
+                url,
+                type: 'GET', // http method
+                success: function(data, status, xhr) {
+                    $("#pane").empty();
+                    $('#pane').append(data);
+                    $(".overlay__inner").removeClass("show");
+                },
+                error: function(jqXhr, textStatus, errorMessage) {
+                    $(".overlay__inner").removeClass("show");
+
+
+                }
+            });
+        }
+
+        console.log(window.location.href, "{{ route('collegeDetail', ['college' => $college->slug]) }}")
+        if (window.location.href != "{{ route('collegeDetail', ['college' => $college->slug]) }}")
+            window.onLoad = loadDoc(window.location.href)
+        // window.addEventListener("load", loadDoc(window.location.href));
+        $(document).on('click', '.tab-route', function(e) {
+            e.preventDefault();
+            $('.tab-route.active').removeClass("active")
+            $(this).addClass("active")
+            loadDoc($(this).attr('href'));
+            goTo("", "", $(this).attr('href'));
+        })
+
+        function goTo(page, title, url) {
+            url = url.replace("/info", "")
+            if ("undefined" !== typeof history.pushState) {
+                history.pushState({
+                    page: page
+                }, title, url);
+            } else {
+                window.location.assign(url);
+            }
+        }
+    </script> --}}
+
+    {{-- <script>
+        var hidWidth;
+        var scrollBarWidths = 40;
+
+        var widthOfList = function() {
+            var itemsWidth = 0;
+            $('.nav-tabs li').each(function() {
+                var itemWidth = $(this).outerWidth();
+                itemsWidth += itemWidth;
+            });
+            return itemsWidth;
+        };
+ $(document).on('scroll', '.college-list-container' , function() {
+            let div = $(this).get(0);
+            if (div.scrollTop + div.clientHeight >= div.scrollHeight) {
+                // do the lazy loading here
+                alert("loadmore")
+            }
+        });
+        var widthOfHidden = function() {
+            return (($('.wrapper').outerWidth()) - widthOfList() - getLeftPosi()) - scrollBarWidths;
+        };
+
+        var getLeftPosi = function() {
+            return $('.nav-tabs').position().left;
+        };
+
+        var reAdjust = function() {
+            if (($('.wrapper').outerWidth()) < widthOfList()) {
+                $('.scroller-right').show();
+            } else {
+                $('.scroller-right').hide();
+            }
+
+            if (getLeftPosi() < 0) {
+                $('.scroller-left').show();
+            } else {
+                $('.item').animate({
+                    left: "-=" + getLeftPosi() + "px"
+                }, 'slow');
+                $('.scroller-left').hide();
+            }
+        }
+
+        reAdjust();
+
+        $(window).on('resize', function(e) {
+            reAdjust();
+        });
+
+        $('.scroller-right').click(function() {
+            console.log(widthOfHidden())
+            $('.scroller-left').fadeIn('slow');
+            $('.scroller-right').fadeOut('slow');
+
+            $('.nav-tabs').animate({
+                left: "+=" + widthOfHidden() + "px"
+            }, 'slow', function() {
+
+            });
+        });
+
+        $('.scroller-left').click(function() {
+
+            $('.scroller-right').fadeIn('slow');
+            $('.scroller-left').fadeOut('slow');
+
+            $('.nav-tabs').animate({
+                left: "-=" + getLeftPosi() + "px"
+            }, 'slow', function() {
+
+            });
+        });
+    </script> --}}
+
+     <!-- Sign In Modal -->
+     <div id="sign-in-dialog" class="zoom-anim-dialog mfp-hide">
+        <div class="modal_header">
+            @if (!auth()->guard('customer')->user())
+                 <h3>Register Now To Apply</h3>
+                @else
+                <h3>Select Course</h3>
+            @endif
+            <h5>{{ $college->name }}</h5>
+        </div>
+        <form method="post" action={{ route('postApply', ['college' => $college->id])  }}>
+            @csrf
+            <div class="sign-in-wrapper">
+                {{-- <a href="#0" class="social_bt facebook">Login with Facebook</a>
+                <a href="#0" class="social_bt google">Login with Google</a>
+                <div class="divider"><span>Or</span></div> --}}
+
+                @if (!auth()->guard('customer')->user())
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" class="form-control" name="name" id="name" placeholder="Enter your name.">
+                        <i class="fa fa-user"></i>
+                    </div><br/>
+                @endif
+
+                @if (!auth()->guard('customer')->user())
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" class="form-control" name="email" id="email" placeholder="Enter your email.">
+                        <i class="icon_mail_alt"></i>
+                    </div><br/>
+                @endif
+
+                @if (!auth()->guard('customer')->user())
+                <div class="form-group">
+                    <label>Mobile Number</label>
+                    <input type="text" class="form-control" name="phone"
+                        placeholder="Enter your mobile number.">
+                    <i class="fas fa-phone"></i>
+                </div><br/>
+                @endif
+
+                @if (!auth()->guard('customer')->user())
+                <div class="form-group">
+                    <label>City You Live In</label>
+                    <input type="text" class="form-control" name="city"
+                        placeholder="Enter your city.">
+                    <i class="fa fa-map-marker"></i>
+                </div><br/>
+                @endif
+
+
+                <div class="form-group">
+                    <label>Course Interested In.</label>
+                    <select name="course_id" class="form-control">
+                        <option disabled selected>Select Course</option>
+                        @foreach ($college->courses as $course)
+                            <option value="{{ $course->course->id }}">{{ $course->course->name }}</option>
+                        @endforeach
+                    </select>
+                </div><br/>
+
+
+                <div class="text-center">
+                    <input type="submit" value="Submit" class="btn_1 full-width mb_5">
+                    @if (!auth()->guard('customer')->user())
+                    Already Registered? <a href="{{ route('login') }}">Sign In</a>
+                    @endif
+                </div>
+
+
+            </div>
+        </form>
+        <!--form -->
+    </div>
+    <!-- /Sign In Modal -->
+
+
+
+@endpush
+
+@push('script')
+    <!-- SPECIFIC SCRIPTS -->
+    <script src="{{ asset('frontend/js/specific_review.js') }}"></script>
+
+    <!-- COMMON SCRIPTS -->
+    <script src="{{ asset('frontend/js/common_scripts.min.js') }}"></script>
+
+
+
+    <script>
+     $(document).ready(function(){
+        $("img").addClass("img-fluid2");
+        $("table").css({"display":"block","table-layout":"auto","border-collapse":"collapse","width":"auto","overflow":"auto","-webkit-overflow-scrolling":"touch","-ms-overflow-style":"-ms-autohiding-scrollbar"});
+        $("table tr td").css({"word-break": "normal!important","padding:","0%!important"});
+            word-wrap: break-word;
+    
+    });
+        const navScroller = function({
+            wrapperSelector: wrapperSelector = '.nav-scroller-wrapper',
+            selector: selector = '.nav-scroller',
+            contentSelector: contentSelector = '.nav-scroller-content',
+            buttonLeftSelector: buttonLeftSelector = '.nav-scroller-btn--left',
+            buttonRightSelector: buttonRightSelector = '.nav-scroller-btn--right',
+            scrollStep: scrollStep = 75
+        } = {}) {
+
+            let scrolling = false;
+            let scrollingDirection = '';
+            let scrollOverflow = '';
+            let timeout;
+
+            let navScrollerWrapper;
+
+            if (wrapperSelector.nodeType === 1) {
+                navScrollerWrapper = wrapperSelector;
+            } else {
+                navScrollerWrapper = document.querySelector(wrapperSelector);
+            }
+            if (navScrollerWrapper === undefined || navScrollerWrapper === null) return;
+
+            let navScroller = navScrollerWrapper.querySelector(selector);
+            let navScrollerContent = navScrollerWrapper.querySelector(contentSelector);
+            let navScrollerLeft = navScrollerWrapper.querySelector(buttonLeftSelector);
+            let navScrollerRight = navScrollerWrapper.querySelector(buttonRightSelector);
+
+
+            // Sets overflow
+            const setOverflow = function() {
+                scrollOverflow = getOverflow(navScrollerContent, navScroller);
+                toggleButtons(scrollOverflow);
+            }
+
+
+            // Debounce setting the overflow with requestAnimationFrame
+            const requestSetOverflow = function() {
+                if (timeout) {
+                    window.cancelAnimationFrame(timeout);
+                }
+
+                timeout = window.requestAnimationFrame(() => {
+                    setOverflow();
+                });
+            }
+
+
+            // Get overflow value on scroller
+            const getOverflow = function(content, container) {
+                let containerMetrics = container.getBoundingClientRect();
+                let containerWidth = containerMetrics.width;
+                let containerMetricsLeft = Math.floor(containerMetrics.left);
+
+                let contentMetrics = content.getBoundingClientRect();
+                let contentMetricsRight = Math.floor(contentMetrics.right);
+                let contentMetricsLeft = Math.floor(contentMetrics.left);
+
+                // Offset the values by the left value of the container
+                let offset = containerMetricsLeft;
+                containerMetricsLeft -= offset;
+                contentMetricsRight -= offset + 1; // Due to an off by one bug in iOS
+                contentMetricsLeft -= offset;
+
+                // console.log (containerMetricsLeft, contentMetricsLeft, containerWidth, contentMetricsRight);
+
+                if (containerMetricsLeft > contentMetricsLeft && containerWidth < contentMetricsRight) {
+                    return 'both';
+                } else if (contentMetricsLeft < containerMetricsLeft) {
+                    return 'left';
+                } else if (contentMetricsRight > containerWidth) {
+                    return 'right';
+                } else {
+                    return 'none';
+                }
+            }
+
+
+            // Move the scroller with a transform
+            const moveScroller = function(direction) {
+                if (scrolling === true) return;
+
+                setOverflow();
+
+                let scrollDistance = scrollStep;
+                let scrollAvailable;
+
+
+                if (scrollOverflow === direction || scrollOverflow === 'both') {
+
+                    if (direction === 'left') {
+                        scrollAvailable = navScroller.scrollLeft;
+                    }
+
+                    if (direction === 'right') {
+                        let navScrollerRightEdge = navScroller.getBoundingClientRect().right;
+                        let navScrollerContentRightEdge = navScrollerContent.getBoundingClientRect().right;
+
+                        scrollAvailable = Math.floor(navScrollerContentRightEdge - navScrollerRightEdge);
+                    }
+
+                    // If there is less that 1.5 steps available then scroll the full way
+                    if (scrollAvailable < (scrollStep * 1.5)) {
+                        scrollDistance = scrollAvailable;
+                    }
+
+                    if (direction === 'right') {
+                        scrollDistance *= -1;
+                    }
+
+                    navScrollerContent.classList.remove('no-transition');
+                    navScrollerContent.style.transform = 'translateX(' + scrollDistance + 'px)';
+
+                    scrollingDirection = direction;
+                    scrolling = true;
+                }
+
+            }
+
+
+            // Set the scroller position and removes transform, called after moveScroller()
+            const setScrollerPosition = function() {
+                var style = window.getComputedStyle(navScrollerContent, null);
+                var transform = style.getPropertyValue('transform');
+                var transformValue = Math.abs(parseInt(transform.split(',')[4]) || 0);
+
+                if (scrollingDirection === 'left') {
+                    transformValue *= -1;
+                }
+
+                navScrollerContent.classList.add('no-transition');
+                navScrollerContent.style.transform = '';
+                navScroller.scrollLeft = navScroller.scrollLeft + transformValue;
+                navScrollerContent.classList.remove('no-transition');
+
+                scrolling = false;
+            }
+
+
+            // Toggle buttons depending on overflow
+            const toggleButtons = function(overflow) {
+                navScrollerLeft.classList.remove('active');
+                navScrollerRight.classList.remove('active');
+
+                if (overflow === 'both' || overflow === 'left') {
+                    navScrollerLeft.classList.add('active');
+                }
+
+                if (overflow === 'both' || overflow === 'right') {
+                    navScrollerRight.classList.add('active');
+                }
+            }
+
+
+            const init = function() {
+
+                // Determine scroll overflow
+                setOverflow();
+
+                // Scroll listener
+                navScroller.addEventListener('scroll', () => {
+                    requestSetOverflow();
+                });
+
+                // Resize listener
+                window.addEventListener('resize', () => {
+                    requestSetOverflow();
+                });
+
+                // Button listeners
+                navScrollerLeft.addEventListener('click', () => {
+                    moveScroller('left');
+                });
+
+                navScrollerRight.addEventListener('click', () => {
+                    moveScroller('right');
+                });
+
+                // Set scroller position
+                navScrollerContent.addEventListener('transitionend', () => {
+                    setScrollerPosition();
+                });
+
+            };
+
+            // Init is called by default
+            init();
+
+
+            // Reveal API
+            return {
+                init
+            };
+        };
+
+        const navScrollerTest = navScroller();
+    </script>
+@endpush

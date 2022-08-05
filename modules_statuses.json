@@ -1,0 +1,10 @@
+{
+    "College": true,
+    "Frontend": true,
+    "Admin": true,
+    "Datatable": true,
+    "StateDataTable": true,
+    "Controller": true,
+    "StateController": true,
+    "Customer": true
+}

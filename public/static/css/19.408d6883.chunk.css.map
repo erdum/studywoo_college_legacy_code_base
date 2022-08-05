@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack://src/ui-component/table.css"],"names":[],"mappings":"AAAA,4FAEI,sBACJ","file":"19.408d6883.chunk.css","sourcesContent":[".MuiDataGrid-root .MuiDataGrid-columnHeader:focus,\n.MuiDataGrid-root .MuiDataGrid-cell:focus {\n    outline: none !important;\n}"]}

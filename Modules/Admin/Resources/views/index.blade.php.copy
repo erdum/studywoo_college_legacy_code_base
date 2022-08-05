@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+
+        <meta charset="utf-8" />
+        <title>Dashboard-{{ SystemConfig::get('app-name') }} Admin</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+        <meta content="Coderthemes" name="author" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <!-- App favicon -->
+        {{-- <link rel="shortcut icon" href="{{ asset('/backend/assets/images/favicon.ico')}}"> --}}
+
+        <!-- Plugins css -->
+        <link href="{{ asset('/backend/assets/libs/flatpickr/flatpickr.min.css')}}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('/backend/assets/libs/selectize/css/selectize.bootstrap3.css')}}" rel="stylesheet" type="text/css" />
+
+        <!-- App css -->
+        <link href="{{ asset('/backend/assets/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" id="bs-default-stylesheet" />
+        <link href="{{ asset('/backend/assets/css/app.min.css')}}" rel="stylesheet" type="text/css" id="app-default-stylesheet" />
+
+        <link href="{{ asset('/backend/assets/css/bootstrap-dark.min.css')}}" rel="stylesheet" type="text/css" id="bs-dark-stylesheet" disabled />
+        <link href="{{ asset('/backend/assets/css/app-dark.min.css')}}" rel="stylesheet" type="text/css" id="app-dark-stylesheet"  disabled />
+
+        <!-- icons -->
+        <link href="{{ asset('/backend/assets/css/icons.min.css')}}" rel="stylesheet" type="text/css" />
+
+    </head>
+
+    <body data-layout='{"mode": "light", "width": "fluid", "menuPosition": "fixed", "sidebar": { "color": "light", "size": "default", "showuser": false}, "topbar": {"color": "dark"}, "showRightSidebarOnPageLoad": true}'>
+
+        <!-- Begin page -->
+        <div id="wrapper">
+
+            <!-- Topbar Start -->
+        @include('admin::layout.partials.topbar')
+        <!-- end Topbar -->
+
+        <!-- ========== Left Sidebar Start ========== -->
+        @include('admin::layout.partials.leftsidebar')
+        <!-- Left Sidebar End -->
+
+
+
+            <!-- ============================================================== -->
+            <!-- Start Page Content here -->
+            <!-- ============================================================== -->
+
+            <div class="content-page">
+                <div class="content">
+
+                    <!-- Start Content-->
+                    <div class="container-fluid">
+
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <div class="page-title-right">
+                                        <form class="form-inline">
+                                            <div class="form-group">
+                                                <div class="input-group input-group-sm">
+                                                    <input type="text" class="form-control border" id="dash-daterange">
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text bg-blue border-blue text-white">
+                                                            <i class="mdi mdi-calendar-range"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {{-- <a href="javascript: void(0);" class="btn btn-blue btn-sm ml-2">
+                                                <i class="mdi mdi-autorenew"></i>
+                                            </a>
+                                            <a href="javascript: void(0);" class="btn btn-blue btn-sm ml-1">
+                                                <i class="mdi mdi-filter-variant"></i>
+                                            </a> --}}
+                                        </form>
+                                    </div>
+                                    <h4 class="page-title">Dashboard</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end page title -->
+
+                        <div class="row">
+                            <div class="col-md-6 col-xl-6">
+                                <div class="widget-rounded-circle card-box">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="avatar-lg rounded-circle bg-soft-primary border-primary border">
+                                                <i class="fe-home font-22 avatar-title text-primary"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="text-right">
+                                                <h3 class="mt-1"><span data-plugin="counterup">{{ $collegesCount }}</span></h3>
+                                                <p class="text-muted mb-1 text-truncate">Total College</p>
+                                            </div>
+                                        </div>
+                                    </div> <!-- end row-->
+                                </div> <!-- end widget-rounded-circle-->
+                            </div> <!-- end col-->
+
+                            <div class="col-md-6 col-xl-6">
+                                <div class="widget-rounded-circle card-box">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="avatar-lg rounded-circle bg-soft-success border-success border">
+                                                <i class="fe-book-open font-22 avatar-title text-success"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="text-right">
+                                                <h3 class="text-dark mt-1"><span data-plugin="counterup">{{ $courseCount }}</span></h3>
+                                                <p class="text-muted mb-1 text-truncate">Total Course</p>
+                                            </div>
+                                        </div>
+                                    </div> <!-- end row-->
+                                </div> <!-- end widget-rounded-circle-->
+                            </div> <!-- end col-->
+
+                            <div class="col-md-6 col-xl-6">
+                                <div class="widget-rounded-circle card-box">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="avatar-lg rounded-circle bg-soft-info border-info border">
+                                                <i class="fe-users font-22 avatar-title text-info"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="text-right">
+                                                <h3 class="text-dark mt-1"><span data-plugin="counterup">{{ $customersCount }}</span></h3>
+                                                <p class="text-muted mb-1 text-truncate">Registered Users</p>
+                                            </div>
+                                        </div>
+                                    </div> <!-- end row-->
+                                </div> <!-- end widget-rounded-circle-->
+                            </div> <!-- end col-->
+
+                            {{-- <div class="col-md-6 col-xl-3">
+                                <div class="widget-rounded-circle card-box">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="avatar-lg rounded-circle bg-soft-warning border-warning border">
+                                                <i class="fe-eye font-22 avatar-title text-warning"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="text-right">
+                                                <h3 class="text-dark mt-1"><span data-plugin="counterup">{{ $visitors }}</span></h3>
+                                                <p class="text-muted mb-1 text-truncate">Total Visitors</p>
+                                            </div>
+                                        </div>
+                                    </div> <!-- end row-->
+                                </div> <!-- end widget-rounded-circle-->
+                            </div> <!-- end col--> --}}
+                        </div>
+
+                    </div> <!-- container -->
+
+                </div> <!-- content -->
+
+                <!-- Footer Start -->
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6">
+                                2015 - <script>document.write(new Date().getFullYear())</script> &copy; UBold theme by <a href="">Coderthemes</a>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-md-right footer-links d-none d-sm-block">
+                                    <a href="javascript:void(0);">About Us</a>
+                                    <a href="javascript:void(0);">Help</a>
+                                    <a href="javascript:void(0);">Contact Us</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+                <!-- end Footer -->
+
+            </div>
+
+            <!-- ============================================================== -->
+            <!-- End Page content -->
+            <!-- ============================================================== -->
+            <!-- Footer Start -->
+
+        @include('admin::layout.partials.footer')
+        <!-- end Footer -->
+
+        </div>
+        <!-- END wrapper -->
+
+
+
+         <!-- Right Sidebar -->
+    @include('admin::layout.partials.rightsidebar')
+    <!-- /Right-bar -->
+
+        <!-- Right bar overlay-->
+        <div class="rightbar-overlay"></div>
+
+        <!-- Vendor js -->
+        <script src="{{ asset('/backend/assets/js/vendor.min.js')}}"></script>
+
+        <!-- Plugins js-->
+        <script src="{{ asset('/backend/assets/libs/flatpickr/flatpickr.min.js')}}"></script>
+        <script src="{{ asset('/backend/assets/libs/apexcharts/apexcharts.min.js')}}"></script>
+
+        <script src="{{ asset('/backend/assets/libs/selectize/js/standalone/selectize.min.js')}}"></script>
+
+        <!-- Dashboar 1 init js-->
+        <script src="{{ asset('/backend/assets/js/pages/dashboard-1.init.js')}}"></script>
+
+        <!-- App js-->
+        <script src="{{ asset('/backend/assets/js/app.min.js')}}"></script>
+
+    </body>
+</html>

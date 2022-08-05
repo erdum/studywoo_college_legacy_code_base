@@ -1,0 +1,18 @@
+User-agent: *
+Disallow: /*/comment
+Disallow: /*/image
+Disallow: /*/faq
+Disallow: /*/video
+Disallow: /*/review
+Disallow: /listing?page=*
+Disallow: /listing/stream=*&
+Disallow: /listing/city=*&
+Disallow: /listing/state=*&
+Disallow: /listing/entrance=*&
+Disallow: /listing/affiliated=UGC*&
+
+
+Sitemap: https://college.studywoo.com/sitemap-daily.xml
+Sitemap: https://college.studywoo.com/sitemap-weekly.xml
+Sitemap: https://college.studywoo.com/sitemap-monthly.xml
+Sitemap: https://college.studywoo.com/sitemap-yearly.xml
